@@ -85,7 +85,7 @@ const localForage = localforage;
   // Updates a weather card with the latest weather forecast. If the card
   // doesn't already exist, it's cloned from the template.
   app.updateForecastCard = function(data) {
-    var dataLastUpdated = new Date(data.created);
+    var dataLastUpdated = new Date(data.time);
     var sunrise = data.sun_rise;
     var sunset = data.sun_set;
     var current = data.consolidated_weather[0];
@@ -114,7 +114,7 @@ const localForage = localforage;
         return;
       }
     }
-    cardLastUpdatedElem.textContent = data.created;
+    cardLastUpdatedElem.textContent = data.time;
 
     card.querySelector('.description').textContent = current.weather_state_name;
     card.querySelector('.date').textContent = current.applicable_date;
@@ -167,31 +167,22 @@ const localForage = localforage;
    * freshest data.
    */
   app.getForecast = function(key, label) {
-    var statement = 'select * from weather.forecast where woeid=' + key;
-    // var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' +
-        // statement;
-        var url = 'https://www.metaweather.com/api/location/' + key;
+    app.updateForecastCard(initialWeatherForecast);
+
+    var url = 'https://www.metaweather.com/api/location/' + key;
     // TODO add cache logic here
 
     // Fetch the latest data.
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function() {
-      if (request.readyState === XMLHttpRequest.DONE) {
-        if (request.status === 200) {
-          var response = JSON.parse(request.response);
-          var results = response;
-          results.key = key;
-          results.label = label;
-          results.created = response.time;
-          app.updateForecastCard(results);
-        }
-      } else {
-        // Return the initial weather forecast since no data is available.
-        app.updateForecastCard(initialWeatherForecast);
-      }
-    };
-    request.open('GET', url);
-    request.send();
+    fetch(url)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        result.key = key;
+        result.label = label;
+        app.updateForecastCard(result);
+      })
+      .catch(() => app.updateForecastCard(initialWeatherForecast));
   };
 
   // Iterate all of the cards and attempt to get the latest forecast data
@@ -262,7 +253,7 @@ const localForage = localforage;
       {weather_state_abbr: 'h', max_temp: 89, min_temp: 77,},
     ]
   };
-  
+
   // TODO uncomment line below to test app with fake data
   // app.updateForecastCard(initialWeatherForecast);
 
