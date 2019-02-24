@@ -17,15 +17,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <base href="https://samvimes01.github.io/pwa-test/">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="canonical" href="https://weather-pwa-sample.firebaseapp.com/final/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather PWA</title>
-  <link rel="stylesheet" type="text/css" href="styles/inline.css">
+  <link rel="stylesheet" type="text/css" href="./styles/inline.css">
+  <link rel="icon" type="icon" href="./favicon.ico">
 
   <!-- TODO add manifest here -->
-  
+  <link rel="manifest" href="./manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Weather PWA">
+  <link rel="apple-touch-icon" href="./images/icons/icon-152x152.png">
 </head>
 <body>
 
@@ -145,7 +150,7 @@
   </div>
 
   <script src="https://cdn.rawgit.com/mozilla/localForage/master/dist/localforage.js" defer></script>
-  <script src="scripts/app.js" defer type="module"></script>
+  <script src="./scripts/app.js" defer type="module"></script>
 
 </body>
 </html>

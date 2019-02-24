@@ -1,2 +1,4 @@
 /final
 /resources
+.vscode
+/node_modules

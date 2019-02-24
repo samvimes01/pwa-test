@@ -171,16 +171,25 @@ const localForage = localforage;
 
     var url = 'https://www.metaweather.com/api/location/' + key;
     // TODO add cache logic here
+    if ('caches' in window) {
+      /*
+       * Check if the service worker has already cached this city's weather
+       * data. If the service worker has the data, then display the cached
+       * data while the app fetches the latest data.
+       */
+      caches.match(url).then((response) => {
+        if (response) {
+          response.json().then((result) => {
+            result.key = key;
+            result.label = label;
+            app.updateForecastCard(result);
+          });
+        }
+      });
+    }
 
     // Fetch the latest data.
-    const options = {
-      mode: 'cors',
-      headers: {
-        'Access-Control-Allow-Credentials' : 'true',
-        'Access-Control-Allow-Origin':'*',
-      }
-    };
-    fetch(url, options)
+    fetch(url)
       .then((response) => {
         return response.json();
       })
@@ -298,4 +307,9 @@ const localForage = localforage;
   });
   
   // TODO add service worker code here
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+             .register('./service-worker.js')
+             .then(function() { console.log('Service Worker Registered'); });
+  }
 })();
