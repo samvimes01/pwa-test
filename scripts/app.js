@@ -173,7 +173,14 @@ const localForage = localforage;
     // TODO add cache logic here
 
     // Fetch the latest data.
-    fetch(url)
+    const options = {
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Credentials' : 'true',
+        'Access-Control-Allow-Origin':'*',
+      }
+    };
+    fetch(url, options)
       .then((response) => {
         return response.json();
       })
